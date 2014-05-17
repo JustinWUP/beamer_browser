@@ -1,0 +1,17 @@
+<% unless playing %>
+  Current Path: <%= current_path %><br><br>
+  <%= "Currently Playing:  #{current_show}<br><br>" if current_show %>
+  <a href="/?path=<%= back %>">Back up a level</a> <br>
+  <%= "<h3>Directories</h3>" if directories.length > 0 %>
+  <% directories.each do |d| %>
+    <a href="/?path=<%= d[:path] %>"><%= d[:name] %></a> <br> 
+  <% end %>  
+  <%= "<h3>Files</h3>" if movies.length > 0 %>
+  <% movies.each do |m| %>
+    <a href="/?path=<%= m[:path] %>"><%= m[:name] %></a> <br> 
+  <% end %>
+<% else %>
+  Currently playing: <%= File.basename(current_path) %><br>
+  <%= 'Press the 3D button on the remote now.<br>' if %w[3D 3d Half-SBS H-SBS].any? {|w| File.basename(current_path).include?(w)} %>
+  <a href="/?path=<%= back %>">Go back to browsing</a>
+<% end %>
