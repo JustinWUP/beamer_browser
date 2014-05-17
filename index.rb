@@ -34,7 +34,7 @@ get '/' do
       else
         `rm ~/projects/server/*.txt`
          current_show = `lsof | grep "/Volumes/Media/Watching/"` 
-         current_show = current_show == "" ? false : current_show.split("/Volumes/Media/Watching/")[1].gsub("TV Shows/", "").gsub("Movies/", "").gsub("\n", "")
+         current_show = current_show == "" ? false : current_show.split(ROOT)[1].gsub("TV Shows/", "").gsub("Movies/", "").gsub("\n", "")
          whoami = `whoami`
          whoami = whoami.gsub("\n", "")
          system("touch \"/Users/#{whoami}/projects/server/#{Time.now}+=+#{current_show}.txt\"") unless current_show == "false"
