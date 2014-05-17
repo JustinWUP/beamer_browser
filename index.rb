@@ -33,7 +33,7 @@ get '/' do
         current_show = current_array[1].gsub(".txt", "") 
       else
         `rm ~/projects/server/*.txt`
-         current_show = `lsof | grep "/Volumes/Media/Watching/"` 
+         current_show = `lsof | grep "#{ROOT}"` 
          current_show = current_show == "" ? false : current_show.split(ROOT)[1].gsub("TV Shows/", "").gsub("Movies/", "").gsub("\n", "")
          whoami = `whoami`
          whoami = whoami.gsub("\n", "")
