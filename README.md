@@ -5,9 +5,12 @@ Simple web based media manager for users of [Beamer](http://beamer-app.com/) and
 
 ## Features
 * Browse your media library
+* Artwork and description views from iTunes API with caching
 * Launch Beamer with selected media from web
 * See what's being played remotely
 * Process polling and very basic caching (read: no database integration) for currently playing file name
+* Somewhat responsive layout for mobile devices
+* Webapp support for iOS 
 
 ## Getting started
 
