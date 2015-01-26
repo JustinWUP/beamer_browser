@@ -1,17 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width">
+<link href="/splash.jpg" rel="apple-touch-startup-image">
+<link rel="apple-touch-icon" href="apple-touch-icon.png"> 
+</head>
+<body>
+<style>
+  body {
+    font-family: sans-serif;
+  }
+  .item { 
+    color:white; 
+    display: inline-block;
+
+    width: 25%; 
+    min-height:80px; 
+    margin-top:20px; 
+    background: #364B5C;
+    padding:10px;
+    box-shadow: 3px 3px 6px grey;
+  }
+  .item a{ color: white; text-decoration: none;}
+  .item a:visited{ color: white;}
+  .description{
+    margin-top: 7px;
+    font-size: 12px;
+    padding: 5px;
+    box-shadow: -1px 0px 7px rgb(96, 105, 111) inset;
+    border: 1px solid grey;
+  }
+</style>
+
 <% unless playing %>
-  Current Path: <%= current_path %><br><br>
-  <%= "Currently Playing:  #{current_show}<br><br>" if current_show %>
+  Current Folder: <%= $current_path.readable %><br><br>
+  <%= "Currently Playing:  #{current_show.readable}<br><br>" if current_show %>
   <a href="/?path=<%= back %>">Back up a level</a> <br>
-  <%= "<h3>Directories</h3>" if directories.length > 0 %>
-  <% directories.each do |d| %>
-    <a href="/?path=<%= d[:path] %>"><%= d[:name] %></a> <br> 
-  <% end %>  
-  <%= "<h3>Files</h3>" if movies.length > 0 %>
-  <% movies.each do |m| %>
-    <a href="/?path=<%= m[:path] %>"><%= m[:name] %></a> <br> 
-  <% end %>
+  <%= "<h3>Folders</h3>" if directories.length > 0 %>
+  <div id="container" >
+    <% directories.each do |d| %>
+      <a href="/?path=<%= d[:path] %>">
+        <div class="item">
+             <img src=<%= ITunes.art(d[:name], 'folder') %> width="50">
+            <%= d[:name].readable %>
+          
+        </div> 
+      </a> 
+    <% end %>  
+  </div>
+  <%= "<h3>Videos</h3>" if movies.length > 0 %>
+  <div id="container" >
+    <% movies.each do |m| %>
+      <a href="/?path=<%= m[:path] %>">
+        <div class="item">
+            <img src=<%= ITunes.art(m[:name], 'file') %> width="50">
+            <%= m[:name].readable %> <br><br>
+            <div style="color: yellowgreen; text-align:center;">Tap To Play</div>
+              <div class="description"> <%= ITunes.description(m[:name]) %> </div>
+        </div>
+      </a>
+    <% end %>
+  </div>
 <% else %>
-  Currently playing: <%= File.basename(current_path) %><br>
-  <%= 'Press the 3D button on the remote now.<br>' if %w[3D 3d Half-SBS H-SBS].any? {|w| File.basename(current_path).include?(w)} %>
+  Currently playing: <%= File.basename($current_path).readable %><br>
+  <%= 'Press the 3D button on the remote now.<br>' if %w[3D 3d Half-SBS H-SBS].any? {|w| File.basename($current_path).include?(w)} %>
   <a href="/?path=<%= back %>">Go back to browsing</a>
 <% end %>
+<script>
+  if(("standalone" in window.navigator) && window.navigator.standalone){
+   
+    // If you want to prevent remote links in standalone web apps opening Mobile Safari, change 'remotes' to true
+    var noddy, remotes = false;
+    
+    document.addEventListener('click', function(event) {
+      
+      noddy = event.target;
+      
+      // Bubble up until we hit link or top HTML element. Warning: BODY element is not compulsory so better to stop on HTML
+      while(noddy.nodeName !== "A" && noddy.nodeName !== "HTML") {
+            noddy = noddy.parentNode;
+        }
+      
+      if('href' in noddy && noddy.href.indexOf('http') !== -1 && (noddy.href.indexOf(document.location.host) !== -1 || remotes))
+      {
+        event.preventDefault();
+        document.location.href = noddy.href;
+      }
+    
+    },false);
+  }
+</script>
+<script src="/masonry.pkgd.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+</body>
+</html>
