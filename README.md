@@ -7,7 +7,7 @@ Simple web based media manager for users of [Beamer](http://beamer-app.com/) and
 * Browse your media library
 * Launch Beamer with selected media from web
 * See what's being played remotely
-* Simple process polling and caching for currently playing file name
+* Process polling and very basic caching (read: no database integration) for currently playing file name
 
 ## Getting started
 
