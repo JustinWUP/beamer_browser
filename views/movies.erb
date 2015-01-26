@@ -32,11 +32,11 @@
     border: 1px solid grey;
   }
 </style>
-
+<p><a href="/settings"><img src="/gear.png"></a></p>
 <% unless playing %>
   Current Folder: <%= $current_path.readable %><br><br>
   <%= "Currently Playing:  #{current_show.readable}<br><br>" if current_show %>
-  <a href="/?path=<%= back %>">Back up a level</a> <br>
+  <%= "<a href=/?path=#{back}>Back up a level</a> <br>" unless ROOT == $current_path %>
   <%= "<h3>Folders</h3>" if directories.length > 0 %>
   <div id="container" >
     <% directories.each do |d| %>

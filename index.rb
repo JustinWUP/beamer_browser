@@ -3,7 +3,6 @@ require 'json'
 require "sinatra"
 require "time"
 require "open-uri"
-require 'base64'
 
 BEAMER = "/Applications/Beamer.app"
 ROOT = "/Volumes/Media/Watching/"
@@ -123,14 +122,14 @@ get '/' do
         end
       end
     end
-    current_show = `ls ~/projects/server/*.txt`
+    current_show = `ls ./*.txt`
     unless current_show == ""
       current_array = current_show.split("+=+")
       last_time = Time.parse(current_array[0])
       if Time.now - last_time < 10000
         current_show = current_array[1].gsub(".txt", "") 
       else
-        `rm ~/projects/server/*.txt`
+        `rm ./*.txt`
          current_show = `lsof | grep "#{ROOT}"` 
          current_show = current_show == "" ? false : current_show.split(ROOT)[1].gsub("TV Shows/", "").gsub("Movies/", "").gsub("\n", "")
          system("touch \"/Users/#{Utils.whoami}/projects/server/#{Time.now}+=+#{current_show}.txt\"") unless current_show == "false"
@@ -141,8 +140,35 @@ get '/' do
     erb :movies, :locals => {movies: movies, directories: directories, back: back, current_path: $current_path, current_show: current_show, playing: false}
   else
      system("open -a #{BEAMER} \"#{$current_path}\"")
-     `rm ~/projects/server/*.txt`
+     `rm ./*.txt`
+     $currently_playing = $current_path
      system("touch \"/Users/#{Utils.whoami}/projects/server/#{Time.now}+=+#{File.basename($current_path)}.txt\"")
      erb :movies, :locals => {movies: movies, directories: directories, back: File.dirname($current_path), current_path: $current_path, playing: true}
+  end
+end
+
+get '/settings' do
+  erb :settings, :locals => {flash: ''}
+end
+
+get '/settings/clear_cache' do 
+  `rm ./public/art_cache/*.*`
+  `rm ./public/description_cache/*.*`
+  erb :settings, :locals => {flash: 'Cache has been cleared.'}
+end
+get '/settings/close_beamer' do 
+  `killall Beamer`
+  `rm ./*.txt`
+  $currently_playing = nil
+  erb :settings, :locals => {flash: 'Beamer has been closed.'}
+end
+get '/settings/restart_beamer' do 
+  if $currently_playing != nil
+    `killall Beamer`
+    system("open -a #{BEAMER} \"#{$currently_playing}\"")
+    erb :settings, :locals => {flash: 'Beamer has been restarted.'}
+  else
+    `killall Beamer`
+    erb :settings, :locals => {flash: 'Beamer has been closed.'}
   end
 end
